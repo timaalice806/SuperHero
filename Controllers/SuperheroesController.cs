@@ -21,7 +21,8 @@ namespace Super_Hero.Controllers
         // GET: Superhero
         public ActionResult Index()
         {
-            return View(_context.SuperHeroes.ToList());
+            List<Models.Hero> listofheroes = _context.SuperHeroes.ToList();
+            return View(listofheroes);
         }
 
         // GET: Superhero/Details/5
@@ -76,6 +77,7 @@ namespace Super_Hero.Controllers
                 oldHero.PrimaryPower = Hero.PrimaryPower;
                 oldHero.SecondaryPower = Hero.SecondaryPower;
                 oldHero.CatchPhrase= Hero.CatchPhrase;
+                _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -85,9 +87,9 @@ namespace Super_Hero.Controllers
         }
 
         // GET: Superhero/Delete/5
-        public ActionResult Delete()
+        public ActionResult Delete(int ID)
         {
-            Hero hero = new Hero();
+            Hero hero = _context.SuperHeroes.Find(ID);
             return View(hero);
         }
 
@@ -102,7 +104,6 @@ namespace Super_Hero.Controllers
                 _context.SuperHeroes.Remove(hero);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
-
             }
             catch
             {
