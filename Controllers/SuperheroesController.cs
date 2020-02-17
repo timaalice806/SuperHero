@@ -27,8 +27,7 @@ namespace Super_Hero.Controllers
         // GET: Superhero/Details/5
         public ActionResult Details(int ID)
         {
-            SuperHero heroDetails = new SuperHero();
-            heroDetails = _context.SuperHeroes.Where(s => s.ID == ID);
+            Hero heroDetails = _context.SuperHeroes.Where(s => s.ID == ID).FirstOrDefault();
             return View(heroDetails);
         }
 
@@ -44,45 +43,49 @@ namespace Super_Hero.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Hero hero)
         {
-            try
+            if(ModelState.IsValid)
             {
                 // TODO: Add insert logic here
                 _context.SuperHeroes.Add(hero);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
             {
-                return View();
+                return View(hero);
             }
         }
 
         // GET: Superhero/Edit/5
         public ActionResult Edit(int ID)
         {
-            Hero hero = new Hero();
+            Hero hero = _context.SuperHeroes.Find(ID);
             return View(hero);
         }
 
         // POST: Superhero/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int ID, Hero hero)
+        public ActionResult Edit(Hero Hero)
         {
-            try
+            if (ModelState.IsValid)
             {
                 // TODO: Add update logic here
+                Hero oldHero = _context.SuperHeroes.Find(Hero.ID);
+                oldHero.Name = Hero.Name;
+                oldHero.AlterEgoName = Hero.AlterEgoName;
+                oldHero.PrimaryPower = Hero.PrimaryPower;
+                oldHero.SecondaryPower = Hero.SecondaryPower;
+                oldHero.CatchPhrase= Hero.CatchPhrase;
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
             {
                 return View();
             }
         }
 
         // GET: Superhero/Delete/5
-        public ActionResult Delete(int ID)
+        public ActionResult Delete()
         {
             Hero hero = new Hero();
             return View(hero);
@@ -91,13 +94,15 @@ namespace Super_Hero.Controllers
         // POST: Superhero/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Hero hero)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                _context.SuperHeroes.Remove(hero);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
+
             }
             catch
             {
